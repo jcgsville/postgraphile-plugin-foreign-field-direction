@@ -1,4 +1,4 @@
-# postgraphile-plugin-omit-read-root
+# postgraphile-plugin-foreign-field-direction
 
 This plugin allows you to expose only a single direction of connections exposed by foreign key
 constraints.
