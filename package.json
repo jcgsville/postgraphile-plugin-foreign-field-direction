@@ -1,0 +1,10 @@
+{
+  "name": "postgraphile-plugin-foreign-field-direction",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "express": "^4.17.3",
+    "postgraphile": "^4.12.9"
+  }
+}
