@@ -9,8 +9,7 @@ With the following schema
 
 ```sql
 create table classroom (
-    id int primary key,
-    name text
+    id int primary key
 );
 create table teacher (
     id int primary key,
@@ -27,8 +26,25 @@ fields.
 For example, via a smart comment
 
 ```sql
-teacher_classroom_id_fkey on teacher is E'@foreignFieldDirection forward';
+comment on constraint teacher_classroom_id_fkey on teacher is E'@foreignFieldDirection forward';
 ```
+
+## Primary Key as Foreign Key Example
+
+With the following schema
+
+```sql
+create table classroom (
+    id int primary key
+);
+create table classroom_other_info (
+    id int primary key references classroom(id)
+);
+```
+
+in the GraphQL generated, the `Classroom` type will have a `classroomOtherInfoById` field and a
+`classroomOtherInfosById` field. Setting the foreign field direction to forward only will omit both
+these fields on `Classroom`.
 
 ## Usage
 

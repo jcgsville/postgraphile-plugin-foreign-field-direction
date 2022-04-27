@@ -42,7 +42,7 @@ const ForeignFieldDirectionPlugin = (builder) => {
             || scope.isPgUpdatePayloadType
             || scope.isPgDeletePayloadType;
         if (mayIncludeFieldToOmit && fieldsToOmit[scope.pgIntrospection.id]) {
-            return omitObjectKeys(fields, [fieldsToOmit[scope.pgIntrospection.id]])
+            return omitObjectKeys(fields, fieldsToOmit[scope.pgIntrospection.id])
         }
         return fields;
     });
@@ -52,20 +52,26 @@ const ForeignFieldDirectionPlugin = (builder) => {
             return input;
         }
 
-        if (scope.isPgBackwardRelationField) {
+        if (scope.isPgBackwardRelationField || scope.isPgBackwardSingleRelationField) {
             const sourceClassIdOfForiegnKey = scope.pgFieldIntrospection.id
             const foreignConstraintIntrospection = scope.pgIntrospection
                 .foreignConstraints
                 .find(({ classId }) => classId === sourceClassIdOfForiegnKey)
             if (foreignFieldDirectionTag(foreignConstraintIntrospection) === FORWARD_TAG_VALUE) {
-                fieldsToOmit[foreignConstraintIntrospection.foreignClassId] = scope.fieldName;
+                if (!fieldsToOmit[foreignConstraintIntrospection.foreignClassId]) {
+                    fieldsToOmit[foreignConstraintIntrospection.foreignClassId] = []
+                }
+                fieldsToOmit[foreignConstraintIntrospection.foreignClassId].push(scope.fieldName);
             }
         }
 
         if (scope.isPgForwardRelationField) {
             const foreignConstraintIntrospection = scope.pgFieldIntrospection
             if (foreignFieldDirectionTag(foreignConstraintIntrospection) === BACKWARD_TAG_VALUE) {
-                fieldsToOmit[scope.pgIntrospection.id] = scope.fieldName;
+                if (!fieldsToOmit[scope.pgIntrospection.id]) {
+                    fieldsToOmit[scope.pgIntrospection.id] = [];
+                }
+                fieldsToOmit[scope.pgIntrospection.id].push(scope.fieldName);
             }
         }
         return input;
